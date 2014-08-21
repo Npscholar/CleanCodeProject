@@ -2,11 +2,16 @@ package validationSystem;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import java.util.*;
 public class ReadXMLFile {
+	
+	List<Person> peopleList = new ArrayList<Person>();
+	
    public static void main(String argv[]) {
     try {
     SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -19,7 +24,8 @@ public class ReadXMLFile {
                String tradername= "";
                double cash = 0.0;
                ArrayList<String> orename = new ArrayList<String>();
-               ArrayList<Double> orequantity = new ArrayList<Double>();
+               ArrayList<Integer> orequantity = new ArrayList<Integer>();
+               HashMap<String,Integer> orelist = new HashMap<String,Integer>();
  
                public void startElement(String uri, String localName,String qName,
                 Attributes attributes) throws SAXException {
@@ -43,6 +49,11 @@ public class ReadXMLFile {
  
                               if(qName.equalsIgnoreCase("traderinfo")) {
                                              //create new object
+                            	  for(int i = 0; i < orename.size(); i++){
+                            		  orelist.put(orename.get(i),orequantity.get(i));
+                            	  }
+                            	  Person p = new Person(tradername, cash, orelist);
+                            	  
             System.out.println("End Element :" + qName);
                                              //dump arraylist and clear instances
             orename.clear();
@@ -68,7 +79,7 @@ public class ReadXMLFile {
                               }
                               if (boquantity) {
                                              System.out.println("Ore Quantity: " + new String(ch, start, length).trim());
-                                             orequantity.add(Double.parseDouble(new String(ch, start, length).trim()));
+                                             orequantity.add(Integer.parseInt((new String(ch, start, length).trim())));
                                              boquantity = false;
                               }
                }
